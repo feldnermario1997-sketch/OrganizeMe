@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useBoardState } from "./core/useBoardState";
+import ItemRenderer from "./core/ItemRenderer";
 
-function App() {
-  const [count, setCount] = useState(0)
+export default function App() {
+  const { board, addItem, updateItem } = useBoardState("Mein erstes Board");
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div style={{ height: "100vh", position: "relative" }}>
+      <h1 style={{ padding: "10px" }}>{board.title}</h1>
 
-export default App
+      <div style={{ padding: "10px" }}>
+        <button
+          onClick={() =>
+            addItem({
+              id: Date.now().toString(),
+              type: "node",
+              data: { text: "Flow Node", x: 100, y: 100 },
+            })
+          }
+        >
+          ➕ Neue Box
+        </button>
+      </div>
+
+      {board.items.map((item) => (
+        <ItemRenderer
+          key={item.id}
+          item={item}
+          updateItem={updateItem}
+        />
+      ))}
+    </div>
+  );
+}
